@@ -1,0 +1,48 @@
+CREATE TABLE Users (
+     Id int PRIMARY KEY,
+     Name varchar(255)
+);
+
+INSERT INTO Users VALUES (1, 'a');
+
+describe Users;
+
+Select @@transaction_ISOLATION;
+
+SET autocommit = 0;
+#default: repeatable read
+START TRANSACTION;
+
+Select * from Users where Id = 1;
+
+UPDATE Users SET Name = 'a_t1' where id = 1;
+
+Select * from Users;
+
+COMMIT;
+
+SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+Select @@transaction_ISOLATION;
+
+START TRANSACTION;
+
+UPDATE Users SET Name = 'a' where id = 1;
+
+
+SELECT * FROM Users where id = 1;
+
+COMMIT;
+
+SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+SELECT @@transaction_ISOLATION;
+
+START TRANSACTION;
+SELECT * FROM Users where id = 1;
+COMMIT;
+
+SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+START TRANSACTION;
+UPDATE users SET NAME= 'a_t1' where id = 1;
+COMMIT;
